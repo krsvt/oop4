@@ -1,55 +1,16 @@
-data = {
-    "start":"id4",
-    "persons": {
-        "id1": { "id": "id1", "name": "Adam", "birthyear": 1900, "deathyear": 1980, "own_unions": ["u1"], "birthplace":"Alberta", "deathplace":"Austin"},
-        "id2": { "id": "id2", "name": "Berta", "birthyear": 1901, "deathyear": 1985, "own_unions": ["u1"], "birthplace":"Berlin", "deathplace":"Bern" },
-        "id3": { "id": "id3", "name": "Charlene", "birthyear": 1930, "deathyear": 2010, "own_unions": ["u3", "u4"], "parent_union": "u1", "birthplace":"Château", "deathplace":"Cuxhaven" },
-        "id4": { "id": "id4", "name": "Dan", "birthyear": 1926, "deathyear": 2009, "own_unions": [], "parent_union": "u1", "birthplace":"den Haag", "deathplace":"Derince" },
-        "id5": { "id": "id5", "name": "Eric", "birthyear": 1931, "deathyear": 2015, "own_unions": ["u3"], "parent_union": "u2", "birthplace":"Essen", "deathplace":"Edinburgh" },
-        "id6": { "id": "id6", "name": "Francis", "birthyear": 1902, "deathyear": 1970, "own_unions": ["u2"], "birthplace":"Firenze", "deathplace":"Faizabad" },
-        "id7": { "id": "id7", "name": "Greta", "birthyear": 1905, "deathyear": 1990, "own_unions": ["u2"] },
-        "id8": { "id": "id8", "name": "Heinz", "birthyear": 1970, "own_unions": ["u5"], "parent_union": "u3" },
-        "id9": { "id": "id9", "name": "Iver", "birthyear": 1925, "deathyear": 1963, "own_unions": ["u4"] },
-        "id10": { "id": "id10", "name": "Jennifer", "birthyear": 1950, "own_unions": [], "parent_union": "u4" },
-        "id11": { "id": "id11", "name": "Klaus", "birthyear": 1933, "deathyear": 2013, "own_unions": [], "parent_union": "u1" },
-        "id12": { "id": "id12", "name": "Lennart", "birthyear": 1999, "own_unions": [], "parent_union": "u5" },
-    },
-    "unions": {
-        "u1": { "id": "u1", "partner": ["id1", "id2"], "children": ["id3", "id4", "id11"] },
-        "u2": { "id": "u2", "partner": ["id6", "id7"], "children": ["id5"] },
-        "u3": { "id": "u3", "partner": ["id3", "id5"], "children": ["id8"] },
-        "u4": { "id": "u4", "partner": ["id3", "id9"], "children": ["id10"] },
-        "u5": { "id": "u5", "partner": ["id8"], "children": ["id12"] },
-    },
-    "links": [
-        ["id1", "u1"],
-        ["id2", "u1"],
-        ["u1", "id3"],
-        ["u1", "id4"],
-        ["id6", "u2"],
-        ["id7", "u2"],
-        ["u2", "id5"],
-        ["id3", "u3"],
-        ["id5", "u3"],
-        ["u3", "id8"],
-        ["id3", "u4"],
-        ["id9", "u4"],
-        ["u4", "id10"],
-        ["u1", "id11"],
-        ["id8", "u5"],
-        ["u5", "id12"],
-    ]
-}
+data =
+{"start":"1","persons":{"1":{"id":"1","name":"Alice","birthYear":1980,"deathYear":null,"ownUnions":["u1"],"parentUnion":null},"2":{"id":"2","name":"Bob","birthYear":1985,"deathYear":null,"ownUnions":["u1"],"parentUnion":null},"3":{"id":"3","name":"Charlie","birthYear":1990,"deathYear":null,"ownUnions":[],"parentUnion":"u1"},"4":{"id":"4","name":"Dana","birthYear":1995,"deathYear":null,"ownUnions":[],"parentUnion":"u1"}},"unions":{"u1":{"id":"u1","partner":["1","2"],"children":["3","4"]}},"links":[["1","u1"],["2","u1"],["u1","3"],["u1","4"]]}
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     // Загрузка данных с сервера
-    const response = await fetch("http://localhost:5000");
+    const response = await fetch("http://localhost:5000/api/tree");
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const treeData = await response.json();
+    console.log(treeData);
 
     const svg = d3
       .select("#tree")

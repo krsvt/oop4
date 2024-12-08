@@ -17,5 +17,7 @@ public class UnionsConfiguration : IEntityTypeConfiguration<Union>
             .HasOne<Person>()
             .WithMany()
             .HasForeignKey(u => u.Partner2Id);
+
+        builder.HasKey(u => new { u.Id, u.ChildId });
     }
 }

@@ -166,7 +166,7 @@ class Union extends FTNode {
         // sort children by birth year, filter undefined
         children = children
             .filter(c => c != undefined)
-            // .sort((a, b) => Math.sign((getBirthYear(a) || 0) - (getBirthYear(b) || 0)));
+            // .sort((a, b) => Math.sign((getbirthYear(a) || 0) - (getbirthYear(b) || 0)));
         return children
     };
 
@@ -293,11 +293,11 @@ class Union extends FTNode {
 
     };
 
-    get_own_unions() {
+    get_ownUnions() {
         return [];
     };
 
-    get_parent_unions() {
+    get_parentUnions() {
         return [];
     };
 
@@ -330,9 +330,9 @@ class Union extends FTNode {
         const id = person_data.id || "p" + ++this.ft_datahandler.number_nodes;
         const dagNode = new d3.dagNode(id, person_data);
         const person = new Person(dagNode, this.ft_datahandler);
-        if (!("parent_union" in person_data)) person_data.parent_union = undefined;
-        if (!("own_unions" in person_data)) {
-            person_data.own_unions = [this.id];
+        if (!("parentUnion" in person_data)) person_data.parentUnion = undefined;
+        if (!("ownUnions" in person_data)) {
+            person_data.ownUnions = [this.id];
             person._childLinkData = [
                 [person.id, this.id]
             ];
@@ -341,7 +341,7 @@ class Union extends FTNode {
         person.data = person_data;
         this.ft_datahandler.nodes.push(person);
         // make sure person lists this union as an own union
-        if (!person_data.own_unions.includes(this.id)) person_data.own_unions.push(this.id);
+        if (!person_data.ownUnions.includes(this.id)) person_data.ownUnions.push(this.id);
         // make sure this union lists person as parent
         if (!this.data.partner.includes(person.id)) this.data.partner.push(person.id);
         // make union visible
@@ -355,12 +355,12 @@ class Union extends FTNode {
         const id = person_data.id || "p" + ++this.ft_datahandler.number_nodes;
         const dagNode = new d3.dagNode(id, person_data);
         const person = new Person(dagNode, this.ft_datahandler);
-        if (!("parent_union" in person_data)) person_data.parent_union = this.id;
-        if (!("own_unions" in person_data)) person_data.own_unions = [];
+        if (!("parentUnion" in person_data)) person_data.parentUnion = this.id;
+        if (!("ownUnions" in person_data)) person_data.ownUnions = [];
         person.data = person_data;
         this.ft_datahandler.nodes.push(person);
         // make sure person lists this union as an parent union
-        if (!person_data.parent_union == this.id) person_data.parent_union == this.id;
+        if (!person_data.parentUnion == this.id) person_data.parentUnion == this.id;
         // make sure this union lists person as child
         if (!this.data.children.includes(person.id)) this.data.children.push(person.id);
         if (!this._childLinkData.includes([this.id, person.id])) this._childLinkData.push([this.id, person.id]);
@@ -392,7 +392,7 @@ class Person extends FTNode {
     };
 
     get_birth_year() {
-        return this.data.birthyear;
+        return this.data.birthYear;
     };
 
     get_birth_place() {
@@ -400,7 +400,7 @@ class Person extends FTNode {
     };
 
     get_death_year() {
-        return this.data.deathyear;
+        return this.data.deathYear;
     };
 
     get_death_place() {
@@ -408,61 +408,61 @@ class Person extends FTNode {
     };
 
     get_neighbors() {
-        return this.get_own_unions().concat(this.get_parent_unions());
+        return this.get_ownUnions().concat(this.get_parentUnions());
     };
 
-    get_parent_unions() {
-        var unions = [this.data.parent_union]
+    get_parentUnions() {
+        var unions = [this.data.parentUnion]
             .map(id => this.ft_datahandler.find_node_by_id(id))
             .filter(node => node != undefined);
-        var u_id = this.data.parent_union;
+        var u_id = this.data.parentUnion;
         if (unions) return unions
         else return [];
     };
 
-    get_hidden_parent_unions() {
-        return this.get_parent_unions().filter(union => !union.visible);
+    get_hidden_parentUnions() {
+        return this.get_parentUnions().filter(union => !union.visible);
     };
 
-    get_visible_parent_unions() {
-        return this.get_parent_unions().filter(union => union.visible);
+    get_visible_parentUnions() {
+        return this.get_parentUnions().filter(union => union.visible);
     };
 
-    get_visible_inserted_parent_unions() {
-        return this.get_visible_parent_unions().filter(union => this.inserted_nodes.includes(union));
+    get_visible_inserted_parentUnions() {
+        return this.get_visible_parentUnions().filter(union => this.inserted_nodes.includes(union));
     };
 
     is_root() {
-        return this.get_visible_parent_unions().length == 0;
+        return this.get_visible_parentUnions().length == 0;
     };
 
     is_union() {
         return false;
     };
 
-    get_own_unions() {
-        var unions = (this.data.own_unions ?? [])
+    get_ownUnions() {
+        var unions = (this.data.ownUnions ?? [])
             .map(id => this.ft_datahandler.find_node_by_id(id))
             .filter(u => u != undefined);
         if (unions) return unions
         else return [];
     };
 
-    get_hidden_own_unions() {
-        return this.get_own_unions().filter(union => !union.visible);
+    get_hidden_ownUnions() {
+        return this.get_ownUnions().filter(union => !union.visible);
     };
 
-    get_visible_own_unions() {
-        return this.get_own_unions().filter(union => union.visible);
+    get_visible_ownUnions() {
+        return this.get_ownUnions().filter(union => union.visible);
     };
 
-    get_visible_inserted_own_unions() {
-        return this.get_visible_own_unions().filter(union => this.inserted_nodes.includes(union));
+    get_visible_inserted_ownUnions() {
+        return this.get_visible_ownUnions().filter(union => this.inserted_nodes.includes(union));
     };
 
     get_parents() {
         var parents = [];
-        this.get_parent_unions().forEach(
+        this.get_parentUnions().forEach(
             u => parents = parents.concat(u.get_parents())
         );
     };
@@ -476,7 +476,7 @@ class Person extends FTNode {
 
     get_partners() {
         var partners = [];
-        this.get_own_unions().forEach(
+        this.get_ownUnions().forEach(
             u => {
                 partners.push(this.get_other_partner(u.data))
             }
@@ -486,13 +486,13 @@ class Person extends FTNode {
 
     get_children() {
         var children = [];
-        this.get_own_unions().forEach(
+        this.get_ownUnions().forEach(
                 u => children = children.concat(getChildren(u))
             )
             // sort children by birth year, filter undefined
         children = children
             .filter(c => c != undefined)
-            // .sort((a, b) => Math.sign((getBirthYear(a) || 0) - (getBirthYear(b) || 0)));
+            // .sort((a, b) => Math.sign((getbirthYear(a) || 0) - (getbirthYear(b) || 0)));
         return children
     };
 
@@ -501,23 +501,23 @@ class Person extends FTNode {
         this.inserted_nodes.push(union);
     };
 
-    hide_own_union(union) {
+    hide_ownUnion(union) {
         union.hide();
         this.inserted_nodes.remove(union);
     };
 
-    hide_parent_union(union) {
+    hide_parentUnion(union) {
         union.hide();
     };
 
     show() {
-        this.get_hidden_own_unions().forEach(union => this.show_union(union));
-        this.get_hidden_parent_unions().forEach(union => this.show_union(union));
+        this.get_hidden_ownUnions().forEach(union => this.show_union(union));
+        this.get_hidden_parentUnions().forEach(union => this.show_union(union));
     };
 
     hide() {
-        this.get_visible_inserted_own_unions().forEach(union => this.hide_own_union(union));
-        this.get_visible_inserted_parent_unions().forEach(union => this.hide_parent_union(union));
+        this.get_visible_inserted_ownUnions().forEach(union => this.hide_ownUnion(union));
+        this.get_visible_inserted_parentUnions().forEach(union => this.hide_parentUnion(union));
     };
 
     click() {
@@ -529,7 +529,7 @@ class Person extends FTNode {
         this.ft_datahandler.update_roots();
     };
 
-    add_own_union(union_data) {
+    add_ownUnion(union_data) {
         // make union object
         const id = union_data.id || "u" + ++this.ft_datahandler.number_nodes;
         const dagNode = new d3.dagNode(id, union_data);
@@ -541,17 +541,17 @@ class Person extends FTNode {
         }
         union.data = union_data;
         this.ft_datahandler.nodes.push(union);
-        // make sure union lists this person as a partner        
+        // make sure union lists this person as a partner
         if (!union_data.partner.includes(this.id)) union_data.partner.push(this.id);
-        // make sure this person lists union as own_union
-        if (!this.data.own_unions.includes(union.id)) this.data.own_unions.push(union.id);
+        // make sure this person lists union as ownUnion
+        if (!this.data.ownUnions.includes(union.id)) this.data.ownUnions.push(union.id);
         if (!this._childLinkData.includes([this.id, union.id])) this._childLinkData.push([this.id, union.id]);
         // make union visible
         this.show_union(union);
         return union;
     };
 
-    add_parent_union(union_data) {
+    add_parentUnion(union_data) {
         // make union object
         const id = union_data.id || "u" + ++this.ft_datahandler.number_nodes;
         const dagNode = new d3.dagNode(id, union_data);
@@ -568,8 +568,8 @@ class Person extends FTNode {
         this.ft_datahandler.nodes.push(union);
         // make sure union lists this person as a child
         if (!union_data.children.includes(this.id)) union_data.children.push(this.id);
-        // make sure this person lists union as own_union
-        this.data.parent_union = union.id;
+        // make sure this person lists union as ownUnion
+        this.data.parentUnion = union.id;
         // make union visible
         this.show_union(union);
         this.ft_datahandler.update_roots();
@@ -757,7 +757,7 @@ class FTDrawer {
     static default_link_path_func(s, d) {
         function vertical_s_bend(s, d) {
             // Creates a diagonal curve fit for vertically oriented trees
-            return `M ${s.x} ${s.y} 
+            return `M ${s.x} ${s.y}
             C ${s.x} ${(s.y + d.y) / 2},
             ${d.x} ${(s.y + d.y) / 2},
             ${d.x} ${d.y}`

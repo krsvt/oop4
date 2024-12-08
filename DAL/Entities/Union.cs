@@ -6,6 +6,6 @@ namespace DAL.Entities
     {
         public int Partner1Id { get; set; }
         public int Partner2Id { get; set; }
-        public List<int> ChildrenIds { get; set; } = new List<int>();
+        public int ChildId { get; set; }
     }
 }

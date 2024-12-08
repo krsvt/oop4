@@ -3,6 +3,7 @@ using System;
 using DAL.Storage.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(FamilyTreeDbContext))]
-    partial class FamilyTreeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241208191338_ChangeUnion")]
+    partial class ChangeUnion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +54,10 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Entities.Union", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ChildId")
                         .HasColumnType("integer");
@@ -62,7 +68,7 @@ namespace DAL.Migrations
                     b.Property<int>("Partner2Id")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id", "ChildId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Partner1Id");
 
