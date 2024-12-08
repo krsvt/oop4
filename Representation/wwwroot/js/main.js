@@ -1,5 +1,12 @@
-data =
-{"start":"1","persons":{"1":{"id":"1","name":"Alice","birthYear":1980,"deathYear":null,"ownUnions":["u1"],"parentUnion":null},"2":{"id":"2","name":"Bob","birthYear":1985,"deathYear":null,"ownUnions":["u1"],"parentUnion":null},"3":{"id":"3","name":"Charlie","birthYear":1990,"deathYear":null,"ownUnions":[],"parentUnion":"u1"},"4":{"id":"4","name":"Dana","birthYear":1995,"deathYear":null,"ownUnions":[],"parentUnion":"u1"}},"unions":{"u1":{"id":"u1","partner":["1","2"],"children":["3","4"]}},"links":[["1","u1"],["2","u1"],["u1","3"],["u1","4"]]}
+// data =
+// {"start":"1","persons":{"1":{"id":"1","name":"Alice","birthYear":1980,"deathYear":null,"ownUnions":["u1"],"parentUnion":null},"2":{"id":"2","name":"Bob","birthYear":1985,"deathYear":null,"ownUnions":["u1"],"parentUnion":null},"3":{"id":"3","name":"Charlie","birthYear":1990,"deathYear":null,"ownUnions":[],"parentUnion":"u1"},"4":{"id":"4","name":"Dana","birthYear":1995,"deathYear":null,"ownUnions":[],"parentUnion":"u1"}},"unions":{"u1":{"id":"u1","partner":["1","2"],"children":["3","4"]}},"links":[["1","u1"],["2","u1"],["u1","3"],["u1","4"]]}
+//
+//
+var data;
+
+async function sleep(msec) {
+    return new Promise(resolve => setTimeout(resolve, msec));
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -9,8 +16,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const treeData = await response.json();
-    console.log(treeData);
+    data = await response.json();
+        console.log(data);
+
+    if (!data || !data.persons || !data.unions) {
+      throw new Error("Ошибка в структуре данных");
+    }
 
     const svg = d3
       .select("#tree")
@@ -18,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       .attr("width", document.body.offsetWidth / 2)
       .attr("height", document.documentElement.clientHeight);
 
-    let FT = new FamilyTree(treeData, svg);
+    let FT = new FamilyTree(data, svg);
     FT.draw();
   } catch (error) {
     console.error("Ошибка загрузки данных или рендера дерева:", error);

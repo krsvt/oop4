@@ -37,6 +37,8 @@ class FTDataHandler {
 
     constructor(data, start_node_id = data.start) {
 
+        console.log("data ");
+        console.log(data);
         // check if edge list defined
         if (data.links.length > 0) {
 
@@ -51,8 +53,11 @@ class FTDataHandler {
                 this.dag = this.root;
             }
 
+        console.log("data ");
+        console.log(data);
             // get all d3-dag nodes and convert to family tree nodes
             this.nodes = this.dag.descendants().map(node => {
+
                 if (node.id in data.unions) return new Union(node, this)
                 else if (node.id in data.persons) return new Person(node, this);
             });
@@ -374,6 +379,8 @@ class Union extends FTNode {
 class Person extends FTNode {
 
     constructor(dagNode, ft_datahandler) {
+        console.log("data4");
+        console.log(data);
         super(dagNode.id, data.persons[dagNode.id]);
         // link to new object
         dagNode.ftnode = this;
@@ -950,6 +957,8 @@ class FTDrawer {
 class FamilyTree extends FTDrawer {
 
     constructor(data, svg) {
+        console.log("data ");
+        console.log(data);
         const ft_datahandler = new FTDataHandler(data);
         super(ft_datahandler, svg);
     };
