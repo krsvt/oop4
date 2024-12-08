@@ -1,0 +1,20 @@
+volumes:
+  lab3-volume: {}
+services:
+  database:
+    container_name: lab3-db
+    image: postgres:16
+    restart: unless-stopped
+    volumes:
+      - lab3-volume:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - 5555:5432
+    networks:
+      - lab-network
+
+networks:
+  lab-network: {}
