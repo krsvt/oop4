@@ -12,6 +12,6 @@ public class Person : BaseEntity
 
   public string Name { get; set; } = "";
   public GenderType Gender { get; set; }
-  public int BirthYear { get; set; }
-  public int? DeathYear { get; set; }
+  public DateTime BirthDate { get; set; }
+  public DateTime? DeathDate { get; set; }
 }

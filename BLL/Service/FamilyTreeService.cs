@@ -31,8 +31,8 @@ public FamilyTreeDTO GetFamilyTree()
         {
             Id = person.Id.ToString(),
             Name = person.Name,
-            BirthYear = person.BirthYear,
-            DeathYear = person.DeathYear
+            BirthYear = person.BirthDate,
+            DeathYear = person.DeathDate
         };
 
         familyTreeDto.Persons[person.Id.ToString()] = personDto;

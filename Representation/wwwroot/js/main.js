@@ -4,10 +4,6 @@
 //
 var data;
 
-async function sleep(msec) {
-    return new Promise(resolve => setTimeout(resolve, msec));
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     // Загрузка данных с сервера
@@ -17,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     data = await response.json();
-        console.log(data);
+    console.log(data);
 
     if (!data || !data.persons || !data.unions) {
       throw new Error("Ошибка в структуре данных");

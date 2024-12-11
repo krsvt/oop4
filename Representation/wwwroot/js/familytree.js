@@ -701,8 +701,8 @@ class FTDrawer {
         var content = `
                 <span style='margin-left: 2.5px;'><b>` + node.get_name() + `</b></span><br>
                 <table style="margin-top: 2.5px;">
-                        <tr><td>born</td><td>` + (node.get_birth_year() || "?") + ` in ` + (node.data.birthplace || "?") + `</td></tr>
-                        <tr><td>died</td><td>` + (node.get_death_year() || "?") + ` in ` + (node.data.deathplace || "?") + `</td></tr>
+                        <tr><td>born</td><td>` + (node.get_birth_year() || "?").substring(0,10) + `</td></tr>
+                        <tr><td>died</td><td>` + (node.get_death_year() || "?").substring(0,10) + `</td></tr>
                 </table>
                 `
         return content.replace(new RegExp("null", "g"), "?");
@@ -725,7 +725,7 @@ class FTDrawer {
         if (node.is_union()) return;
         return node.get_name() +
             FTDrawer.label_delimiter +
-            (node.get_birth_year() || "?") + " - " + (node.get_death_year() || "?");
+            (node.get_birth_year().substring(0,10) || "?") + " - " + (node.get_death_year() || "?").substring(0,10);
     };
 
     node_label(node_label_func) {
