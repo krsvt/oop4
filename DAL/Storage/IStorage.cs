@@ -3,5 +3,6 @@ namespace DAL.Storage;
 
 public interface IStorage
 {
-  // public IRepository<> ProductRepository { get; set; }
+    public IRepository<Person> PersonRepository { get; set; }
+    public IRepository<Union> UnionRepository { get; set; }
 }

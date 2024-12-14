@@ -4,16 +4,63 @@
 //
 var data;
 
-document.addEventListener("DOMContentLoaded", async () => {
+const backend = "http://localhost:5000";
+const tree = backend + "/api/tree";
+const person = backend + "/api/person";
+const union = backend + "/api/union";
+
+function renderTable(persons) {
+  const tableBody = document.querySelector("#personTable tbody");
+
+  tableBody.innerHTML = "";
+
+  persons.forEach(person => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+          <td>${person.id}</td>
+          <td>${person.name}</td>
+          <td>${person.gender}</td>
+          <td>${new Date(person.birthDate).toLocaleDateString()}</td>
+          <td>${person.deathDate ? new Date(person.deathDate).toLocaleDateString() : "N/A"}</td>
+        `;
+
+    tableBody.appendChild(row);
+  });
+}
+
+async function deleteTree() {
+  const response = await fetch(tree, {
+    method: 'DELETE',
+  });
+
+  if (response.status === 204) {
+    alert('Tree deleted successfully!');
+  } else {
+    const error = await response.json();
+    alert(`Failed to delete tree: ${error.detail || response.status}`);
+  }
+}
+
+async function getAllPersons() {
+  const response = await fetch(person);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
+async function updateTree() {
   try {
+    d3.select("#tree").select("svg").remove();
     // Загрузка данных с сервера
-    const response = await fetch("http://localhost:5000/api/tree");
+    const response = await fetch(tree);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     data = await response.json();
-    console.log(data);
 
     if (!data || !data.persons || !data.unions) {
       throw new Error("Ошибка в структуре данных");
@@ -27,9 +74,36 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let FT = new FamilyTree(data, svg);
     FT.draw();
+    renderTable(await getAllPersons());
   } catch (error) {
     console.error("Ошибка загрузки данных или рендера дерева:", error);
   }
+
+}
+
+async function addPerson(person) {
+  try {
+    const response = await fetch(person, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(person),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("Ответ от сервера:", result);
+  } catch (error) {
+    console.error("Ошибка при отправке данных:", error);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  updateTree();
 
   const button = document.getElementById("sendButton");
 
@@ -40,23 +114,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       gender: "male",
     };
 
-    try {
-      const response = await fetch("http://localhost:5000/api/person", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(personData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log("Ответ от сервера:", result);
-    } catch (error) {
-      console.error("Ошибка при отправке данных:", error);
-    }
+    addPerson(personData);
   });
+
+  const deleteButton = document.getElementById("deleteButton");
+
+  deleteButton.addEventListener("click", async () => {
+    await deleteTree();
+    await updateTree();
+  });
+
 });

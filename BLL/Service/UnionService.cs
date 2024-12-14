@@ -2,15 +2,16 @@ namespace BLL.Service;
 
 using DAL.Entities;
 using DAL.Storage.Database;
+using DAL.Storage;
 using BLL.DTO;
 
 public class UnionService
 {
-    private readonly FamilyTreeDbContext _dbContext;
+    private IStorage Storage;
 
-    public UnionService(FamilyTreeDbContext dbContext)
+    public UnionService(IStorage storage)
     {
-        _dbContext = dbContext;
+        Storage = storage;
     }
 
     public void CreateUnion(UnionDTO union)
@@ -25,9 +26,8 @@ public class UnionService
                     Partner2Id = union.Partner[1],
                     ChildId = c
                 };
-                _dbContext.Unions.Add(u);
+                Storage.UnionRepository.AddAsync(u);
             }
-            _dbContext.SaveChanges();
         }
         catch (FormatException)
         {

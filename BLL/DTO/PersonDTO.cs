@@ -4,7 +4,7 @@ namespace BLL.DTO;
 
 public class PersonDTO
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
     public string Name { get; set; }
     public Gender Gender { get; set; }
     public DateTime BirthYear { get; set; }
