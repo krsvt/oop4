@@ -111,6 +111,13 @@ tree.MapDelete("/", (FamilyTreeService s) => { s.DeleteTree(); return Results.No
 // GET http://localhost:5000/api/person
 person.MapGet("/", (PersonService s) => { return s.GetAll(); });
 
+// GET http://localhost:5000/api/person/<id>/relatives
+person.MapGet("/{id}/relatives", async (PersonService s, int id) =>
+        {
+            var a = await s.GetImmediateRelatives(id);
+            Console.WriteLine("a " + a.ToString());
+            return Results.Ok(a);
+        });
 
 // POST http://localhost:5000/api/person
 person.MapPost("/", async (PersonService s, Person person) =>

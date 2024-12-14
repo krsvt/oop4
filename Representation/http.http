@@ -1,3 +1,9 @@
+## TODO: wtf
+###
+GET http://localhost:5000/api/person/6/relatives
+accept: application/json
+
+###
 GET http://localhost:5000/api/tree
 
 ###
@@ -28,23 +34,3 @@ content-type: application/json
  "children": [6, 7]
 }
 
-###
-POST http://localhost:5000/api/union
-accept: application/json
-content-type: application/json
-
-{
- "partner": [9, 7],
- "children": []
-}
-
-
-###
-POST http://localhost:5000/api/union
-accept: application/json
-content-type: application/json
-
-{
- "partner": [9, 7],
- "children": []
-}

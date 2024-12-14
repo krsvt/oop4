@@ -90,42 +90,6 @@ public class FamilyTreeService
         return familyTreeDto;
     }
 
-    private PersonDTO MapToDto(Person person)
-    {
-        return new PersonDTO
-        {
-            Id = person.Id,
-            Name = person.Name,
-            BirthYear = person.BirthDate,
-            DeathYear = person.DeathDate
-        };
-    }
-
-    public RelativesDTO GetImmediateRelatives(int personId)
-    {
-        var unions = _dbContext.Unions;
-        var people = _dbContext.Persons;
-        var relatives = new List<Person>();
-
-        var childrenIds = unions
-            .Where(u => u.Partner1Id == personId || u.Partner2Id == personId)
-            .Select(u => u.ChildId);
-
-        relatives.AddRange(people.Where(p => childrenIds.Contains(p.Id)));
-
-        var parentIds = unions
-            .Where(u => u.ChildId == personId)
-            .SelectMany(u => new[] { u.Partner1Id, u.Partner2Id });
-
-        relatives.AddRange(people.Where(p => parentIds.Contains(p.Id)));
-
-        return new RelativesDTO
-        {
-            Relatives = relatives.Select(MapToDto).ToList(),
-            PersonId = personId
-        };
-    }
-
     public static int? CalculateAgeAtChildBirth(Person parent, Person child)
     {
         if (parent.BirthDate > child.BirthDate)
