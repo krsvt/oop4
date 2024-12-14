@@ -30,4 +30,33 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (error) {
     console.error("Ошибка загрузки данных или рендера дерева:", error);
   }
+
+  const button = document.getElementById("sendButton");
+
+  button.addEventListener("click", async () => {
+    const personData = {
+      name: "John Doe",
+      age: 30,
+      gender: "male",
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/api/person", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(personData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Ответ от сервера:", result);
+    } catch (error) {
+      console.error("Ошибка при отправке данных:", error);
+    }
+  });
 });

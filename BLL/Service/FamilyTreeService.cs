@@ -18,7 +18,7 @@ public FamilyTreeDTO GetFamilyTree()
 {
     var familyTreeDto = new FamilyTreeDTO
     {
-        Persons = new Dictionary<string, PersonDTO>(),
+        Persons = new Dictionary<int, PersonDTO>(),
         Unions = new Dictionary<string, UnionDTO>(),
         Links = new List<List<string>>()
     };
@@ -29,57 +29,56 @@ public FamilyTreeDTO GetFamilyTree()
     {
         var personDto = new PersonDTO
         {
-            Id = person.Id.ToString(),
+            Id = person.Id,
             Name = person.Name,
             BirthYear = person.BirthDate,
             DeathYear = person.DeathDate
         };
 
-        familyTreeDto.Persons[person.Id.ToString()] = personDto;
+        familyTreeDto.Persons[person.Id] = personDto;
     }
 
     var unions = _dbContext.Unions.ToList();
 
-    // Обрабатываем союзы
     foreach (var union in unions)
     {
-        var id = "u" + union.Id.ToString();
+        var id = union.Partner1Id + "-" + union.Partner1Id;
 
         if (familyTreeDto.Unions.ContainsKey(id))
         {
-            familyTreeDto.Unions[id].Children.Add(union.ChildId.ToString());
+            familyTreeDto.Unions[id].Children.Add(union.ChildId);
         }
         else
         {
             var unionDto = new UnionDTO
             {
                 Id = id,
-                Partner = new List<string>
+                Partner = new List<int>
                 {
-                    union.Partner1Id.ToString(),
-                    union.Partner2Id.ToString()
+                    union.Partner1Id,
+                    union.Partner2Id
                 },
-                Children = new List<string> { union.ChildId.ToString() }
+                Children = new List<int> { union.ChildId}
             };
             familyTreeDto.Unions[id] = unionDto;
         }
 
 
-        if (!familyTreeDto.Persons[union.Partner1Id.ToString()].OwnUnions.Contains(id)) {
-            familyTreeDto.Persons[union.Partner1Id.ToString()].OwnUnions.Add(id);
+        if (!familyTreeDto.Persons[union.Partner1Id].OwnUnions.Contains(id)) {
+            familyTreeDto.Persons[union.Partner1Id].OwnUnions.Add(id);
             familyTreeDto.Links.Add(new List<string> { union.Partner1Id.ToString(), id });
         }
 
-        if (!familyTreeDto.Persons[union.Partner2Id.ToString()].OwnUnions.Contains(id))
+        if (!familyTreeDto.Persons[union.Partner2Id].OwnUnions.Contains(id))
         {
-          familyTreeDto.Persons[union.Partner2Id.ToString()].OwnUnions.Add(id);
+          familyTreeDto.Persons[union.Partner2Id].OwnUnions.Add(id);
           familyTreeDto.Links.Add(new List<string> { union.Partner2Id.ToString(), id });
         }
 
         if (union.ChildId != 0)
         {
             familyTreeDto.Links.Add(new List<string> { id, union.ChildId.ToString() });
-            familyTreeDto.Persons[union.ChildId.ToString()].ParentUnion = id;
+            familyTreeDto.Persons[union.ChildId].ParentUnion = id;
         }
     }
 
