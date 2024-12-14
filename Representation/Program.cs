@@ -2,6 +2,8 @@ using System.Text.Json;
 using System.Text;
 using Representation.Configuration;
 using BLL.Service;
+using DAL.Entities;
+using BLL.DTO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +44,7 @@ app.UseHttpsRedirection();
 
 var tree = app.MapGroup("/api/tree");
 var person = app.MapGroup("/api/person");
+var union = app.MapGroup("/api/union");
 
 // GET http://localhost:5000/api/tree
 tree.MapGet("/", (FamilyTreeService s) =>
@@ -108,6 +111,21 @@ tree.MapDelete("/", (FamilyTreeService s) => { s.DeleteTree(); return Results.No
 // GET http://localhost:5000/api/person
 person.MapGet("/", (PersonService s) => { return s.GetAll(); });
 
+
+// POST http://localhost:5000/api/person
+person.MapPost("/", async (PersonService s, Person person) =>
+    {
+        await s.CreatePerson(person);
+        return Results.Created($"/api/person/{person.Id}", person);
+    });
+
+// POST http://localhost:5000/api/union
+union.MapPost("/", async (UnionService s, UnionDTO union) =>
+    {
+        await s.CreateUnion(union);
+    });
+
 tree.WithOpenApi();
 person.WithOpenApi();
+union.WithOpenApi();
 app.Run();

@@ -1,1 +1,50 @@
+GET http://localhost:5000/api/tree
+
+###
 GET http://localhost:5000/api/person
+
+
+###
+
+POST http://localhost:5000/api/person
+accept: application/json
+content-type: application/json
+
+{
+ "gender": 0,
+ "name": "hello",
+ "birthDate": "2000-01-01T00:00:00Z"
+}
+
+
+###
+
+POST http://localhost:5000/api/union
+accept: application/json
+content-type: application/json
+
+{
+ "partner": [4, 5],
+ "children": [6, 7]
+}
+
+###
+POST http://localhost:5000/api/union
+accept: application/json
+content-type: application/json
+
+{
+ "partner": [9, 7],
+ "children": []
+}
+
+
+###
+POST http://localhost:5000/api/union
+accept: application/json
+content-type: application/json
+
+{
+ "partner": [9, 7],
+ "children": []
+}

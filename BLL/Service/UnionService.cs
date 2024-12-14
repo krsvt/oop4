@@ -14,19 +14,31 @@ public class UnionService
         Storage = storage;
     }
 
-    public void CreateUnion(UnionDTO union)
+    public async Task CreateUnion(UnionDTO union)
     {
         try
         {
-            foreach (var c in union.Children)
+            if (union.Children == null || union.Children.Count == 0)
             {
                 var u = new Union
                 {
                     Partner1Id = union.Partner[0],
-                    Partner2Id = union.Partner[1],
-                    ChildId = c
+                    Partner2Id = union.Partner[1]
                 };
-                Storage.UnionRepository.AddAsync(u);
+                await Storage.UnionRepository.AddAsync(u);
+            }
+            else
+            {
+                foreach (var c in union.Children)
+                {
+                    var u = new Union
+                    {
+                        Partner1Id = union.Partner[0],
+                        Partner2Id = union.Partner[1],
+                        ChildId = c
+                    };
+                    await Storage.UnionRepository.AddAsync(u);
+                }
             }
         }
         catch (FormatException)

@@ -40,7 +40,6 @@
   <body>
     <div id="info">
       <h1>Family Tree</h1>
-      <button id="sendButton">Send</button>
       <button id="deleteButton">Delete tree</button>
       <h1>Add Person</h1>
 
@@ -52,15 +51,31 @@
         <select id="gender" required>
           <option value="0">Male</option>
           <option value="1">Female</option>
-        ><br />
+          >
+        </select>
+        <br />
 
         <label for="birthDate">Birth Date:</label>
-        <input type="date" id="birthDate" required /><br />
+        <input type="date" id="birthDate" required />
+        <br />
 
         <label for="deathDate">Death Date (optional):</label>
         <input type="date" id="deathDate" /><br />
 
         <button id="addPersonButton">Add Person</button>
+      </div>
+
+      <h1>Create Union</h1>
+      <div class="form-container">
+        <label for="partners">Partners:</label>
+        <select id="partners" multiple required></select
+        ><br />
+
+        <label for="children">Children:</label>
+        <select id="children" multiple></select
+        ><br />
+
+        <button id="createUnionButton">Create Union</button>
       </div>
 
       <h1>Persons Table</h1>

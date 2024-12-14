@@ -1,7 +1,3 @@
-// data =
-// {"start":"1","persons":{"1":{"id":"1","name":"Alice","birthYear":1980,"deathYear":null,"ownUnions":["u1"],"parentUnion":null},"2":{"id":"2","name":"Bob","birthYear":1985,"deathYear":null,"ownUnions":["u1"],"parentUnion":null},"3":{"id":"3","name":"Charlie","birthYear":1990,"deathYear":null,"ownUnions":[],"parentUnion":"u1"},"4":{"id":"4","name":"Dana","birthYear":1995,"deathYear":null,"ownUnions":[],"parentUnion":"u1"}},"unions":{"u1":{"id":"u1","partner":["1","2"],"children":["3","4"]}},"links":[["1","u1"],["2","u1"],["u1","3"],["u1","4"]]}
-//
-//
 var data;
 
 const backend = "http://localhost:5000";
@@ -11,8 +7,12 @@ const union = backend + "/api/union";
 
 function renderTable(persons) {
   const tableBody = document.querySelector("#personTable tbody");
+  const partnersSelect = document.getElementById("partners");
+  const childrenSelect = document.getElementById("children");
 
   tableBody.innerHTML = "";
+  partnersSelect.innerHTML = "";
+  childrenSelect.innerHTML = "";
 
   persons.forEach(person => {
     const row = document.createElement("tr");
@@ -20,12 +20,16 @@ function renderTable(persons) {
     row.innerHTML = `
           <td>${person.id}</td>
           <td>${person.name}</td>
-          <td>${person.gender}</td>
+          <td>${person.gender == 0 ? 'male' : 'female'}</td>
           <td>${new Date(person.birthDate).toLocaleDateString()}</td>
           <td>${person.deathDate ? new Date(person.deathDate).toLocaleDateString() : "N/A"}</td>
         `;
 
     tableBody.appendChild(row);
+    const option = `<option value="${person.id}">${person.name}</option>`;
+    partnersSelect.innerHTML += option;
+    childrenSelect.innerHTML += option;
+
   });
 }
 
@@ -54,7 +58,6 @@ async function getAllPersons() {
 async function updateTree() {
   try {
     d3.select("#tree").select("svg").remove();
-    // Загрузка данных с сервера
     const response = await fetch(tree);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -81,14 +84,28 @@ async function updateTree() {
 
 }
 
-async function addPerson(person) {
+async function addPerson() {
   try {
+    const name = document.getElementById("name").value;
+    const gender = parseInt(document.getElementById("gender").value, 10);
+    const birthDate = document.getElementById("birthDate").value + "T00:00:00Z";
+    const deathDate = document.getElementById("deathDate").value;
+    const d = deathDate ? deathDate + "T00:00:00Z" : null;
+
+    // Create person object
+    const personData = {
+      name: name,
+      gender: gender,
+      birthDate: birthDate,
+      deathDate: d
+    };
+
     const response = await fetch(person, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(person),
+      body: JSON.stringify(personData),
     });
 
     if (!response.ok) {
@@ -97,6 +114,7 @@ async function addPerson(person) {
 
     const result = await response.json();
     console.log("Ответ от сервера:", result);
+    updateTree();
   } catch (error) {
     console.error("Ошибка при отправке данных:", error);
   }
@@ -105,23 +123,41 @@ async function addPerson(person) {
 document.addEventListener("DOMContentLoaded", async () => {
   updateTree();
 
-  const button = document.getElementById("sendButton");
-
-  button.addEventListener("click", async () => {
-    const personData = {
-      name: "John Doe",
-      age: 30,
-      gender: "male",
-    };
-
-    addPerson(personData);
-  });
-
   const deleteButton = document.getElementById("deleteButton");
 
   deleteButton.addEventListener("click", async () => {
     await deleteTree();
     await updateTree();
+  });
+
+  document.getElementById("addPersonButton").addEventListener("click", async () => {
+    await addPerson();
+  });
+
+  document.getElementById("createUnionButton").addEventListener("click", async () => {
+    const partnersSelect = document.getElementById("partners");
+    const childrenSelect = document.getElementById("children");
+    const selectedPartners = Array.from(partnersSelect.selectedOptions).map(o => parseInt(o.value));
+    const selectedChildren = Array.from(childrenSelect.selectedOptions).map(o => parseInt(o.value));
+
+    const unionData = {
+      partner: selectedPartners,
+      children: selectedChildren
+    };
+
+    try {
+      await fetch(union, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(unionData)
+      });
+      await updateTree();
+    } catch (error) {
+      console.error("Error creating union:", error);
+      alert("Failed to create union. Please check the console for more details.");
+    }
   });
 
 });

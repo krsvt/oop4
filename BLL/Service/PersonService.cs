@@ -14,16 +14,9 @@ public class PersonService
         Storage = storage;
     }
 
-    public void CreatePerson(PersonDTO person)
+    public async Task CreatePerson(Person person)
     {
-        var p = new Person
-        {
-            Gender = Gender.MALE,
-            Name = person.Name,
-            BirthDate = person.BirthYear,
-            DeathDate = person.DeathYear
-        };
-        Storage.PersonRepository.AddAsync(p);
+        await Storage.PersonRepository.AddAsync(person);
     }
 
     public Task<List<Person>> GetAll()

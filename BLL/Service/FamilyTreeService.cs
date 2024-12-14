@@ -43,9 +43,9 @@ public class FamilyTreeService
 
         foreach (var union in unions)
         {
-            var id = union.Partner1Id + "-" + union.Partner1Id;
+            var id = union.Partner1Id + "-" + union.Partner2Id;
 
-            if (familyTreeDto.Unions.ContainsKey(id))
+            if (familyTreeDto.Unions.ContainsKey(id) && union.ChildId != 0)
             {
                 familyTreeDto.Unions[id].Children.Add(union.ChildId);
             }
@@ -58,9 +58,10 @@ public class FamilyTreeService
                 {
                     union.Partner1Id,
                     union.Partner2Id
-                },
-                    Children = new List<int> { union.ChildId }
+                }
                 };
+                unionDto.Children = new List<int>();
+                if (union.ChildId != 0) unionDto.Children.Add(union.ChildId);
                 familyTreeDto.Unions[id] = unionDto;
             }
 
