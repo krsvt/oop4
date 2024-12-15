@@ -1,7 +1,7 @@
 namespace BLL.DTO;
 
-public class RelativesDTO
+public record RelativesDTO
 {
-    public int PersonId;
-    public List<PersonDTO> Relatives;
+    public int PersonId { get; set; }
+    public List<PersonDTO> Relatives {get; set;}  = new List<PersonDTO>();
 }

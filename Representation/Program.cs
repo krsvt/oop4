@@ -115,8 +115,8 @@ person.MapGet("/", (PersonService s) => { return s.GetAll(); });
 person.MapGet("/{id}/relatives", async (PersonService s, int id) =>
         {
             var a = await s.GetImmediateRelatives(id);
-            Console.WriteLine("a " + a.ToString());
-            return Results.Ok(a);
+            return a;
+            // return Results.Ok(a);
         });
 
 // POST http://localhost:5000/api/person

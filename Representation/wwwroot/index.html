@@ -35,50 +35,84 @@
         padding: 8px;
         width: 200px;
       }
+      .checkbox-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .checkbox-container label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
     </style>
   </head>
   <body>
     <div id="info">
       <h1>Family Tree</h1>
       <button id="deleteButton">Delete tree</button>
-      <h1>Add Person</h1>
 
-      <div class="form-container">
-        <label for="name">Name:</label>
-        <input type="text" id="name" required /><br />
+      <div style="display: flex; justify-content: space-between">
+        <div style="flex: 1; margin-right: 20px">
+          <h1>Add Person</h1>
+          <div class="form-container">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required /><br />
 
-        <label for="gender">Gender:</label>
-        <select id="gender" required>
-          <option value="0">Male</option>
-          <option value="1">Female</option>
-          >
-        </select>
-        <br />
+            <label for="gender">Gender:</label>
+            <select id="gender" required>
+              <option value="0">Male</option>
+              <option value="1">Female</option>
+            </select>
+            <br />
 
-        <label for="birthDate">Birth Date:</label>
-        <input type="date" id="birthDate" required />
-        <br />
+            <label for="birthDate">Birth Date:</label>
+            <input type="date" id="birthDate" required />
+            <br />
 
-        <label for="deathDate">Death Date (optional):</label>
-        <input type="date" id="deathDate" /><br />
+            <label for="deathDate">Death Date (optional):</label>
+            <input type="date" id="deathDate" /><br />
 
-        <button id="addPersonButton">Add Person</button>
-      </div>
+            <button id="addPersonButton">Add Person</button>
+          </div>
+        </div>
 
-      <h1>Create Union</h1>
-      <div class="form-container">
-        <label for="partners">Partners:</label>
-        <select id="partners" multiple required></select
-        ><br />
+        <div style="flex: 1">
+          <h1>Create Union</h1>
+          <div class="form-container">
+            <label for="partner1Input">Partner 1 (ID):</label>
+            <input
+              type="text"
+              id="partner1Input"
+              placeholder="e.g., 1"
+              required
+            />
+            <br />
 
-        <label for="children">Children:</label>
-        <select id="children" multiple></select
-        ><br />
+            <label for="partner2Input">Partner 2 (ID):</label>
+            <input
+              type="text"
+              id="partner2Input"
+              placeholder="e.g., 2"
+              required
+            />
+            <br />
 
-        <button id="createUnionButton">Create Union</button>
+            <label for="childrenInput"
+              >Children (IDs separated by commas):</label
+            >
+            <input type="text" id="childrenInput" placeholder="e.g., 3,4,5" />
+            <br />
+
+            <button id="createUnionButton">Create Union</button>
+          </div>
+        </div>
       </div>
 
       <h1>Persons Table</h1>
+      <p id="showingText" style="display: none"></p>
+      <button id="showAllButton" style="display: none">Show All</button>
       <table id="personTable">
         <thead>
           <tr>
@@ -87,6 +121,7 @@
             <th>Gender</th>
             <th>Birth Date</th>
             <th>Death Date</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody></tbody>

@@ -2,7 +2,7 @@ using DAL.Entities;
 
 namespace BLL.DTO;
 
-public class PersonDTO
+public record PersonDTO
 {
     public int? Id { get; set; }
     public string Name { get; set; }

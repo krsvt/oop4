@@ -21,7 +21,8 @@ public class PersonService
 
     public Task<List<Person>> GetAll()
     {
-        return Storage.PersonRepository.GetAllAsync();
+        var persons = await Storage.PersonRepository.GetAllAsync();
+        return persons.OrderBy(p => p.Id).ToList();
     }
 
     private PersonDTO MapToDto(Person person)
@@ -45,30 +46,27 @@ public class PersonService
             throw new ArgumentException($"Person with ID {personId} not found.");
         }
 
-        Console.WriteLine("here");
         var relatives = new List<Person>();
 
-        Console.WriteLine("here");
         var childrenIds = unions
             .Where(u => (u.Partner1Id == personId || u.Partner2Id == personId))
             .Select(u => u.ChildId);
 
-        Console.WriteLine("here");
         relatives.AddRange(people.Where(p => childrenIds.Contains(p.Id)));
 
-        Console.WriteLine("here");
         var parentIds = unions
             .Where(u => u.ChildId == personId)
             .SelectMany(u => new[] { u.Partner1Id, u.Partner2Id });
 
-        Console.WriteLine("here");
         relatives.AddRange(people.Where(p => parentIds.Contains(p.Id)));
 
-        Console.WriteLine("here!");
-        return new RelativesDTO
+        Console.WriteLine(relatives.Select(MapToDto).ToList().FirstOrDefault());
+
+        var res = new RelativesDTO
         {
             Relatives = relatives.Select(MapToDto).ToList(),
             PersonId = personId
         };
+        return res;
     }
 }
